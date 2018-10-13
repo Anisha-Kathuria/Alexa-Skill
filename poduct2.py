@@ -35,23 +35,18 @@ def build_response(session_attributes, speechlet_response):
 # --------------- Functions that control the skill's behavior ------------------
 
 def get_welcome_response():
-    """ If we wanted to initialize the session to have some attributes we could
-    add those here
-    """
-
+    
     session_attributes = {}
     card_title = "Welcome"
     speech_output = "Welcome to the Wildlife Guru. " \
                     "Please tell me your choice one product second animal and third ngo names if product then by saying, " \
                     "my option is one"
-    # If the user either does not reply to the welcome message or says something
-    # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me your choice by saying, " \
                     "my option is one."
+    
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
-
 
 def handle_session_end_request():
     card_title = "Session Ended"
@@ -62,15 +57,7 @@ def handle_session_end_request():
     return build_response({}, build_speechlet_response(
         card_title, speech_output, None, should_end_session))
 
-
-#def create_favorite_color_attributes(favorite_color):
-#    return {"favoriteColor": favorite_color}
-
-
 def set_option(intent, session):
-    """ Sets the color in the session and prepares the speech to reply to the
-    user.
-    """
 
     card_title = "Menu Option"
     session_attributes = {}
@@ -79,27 +66,27 @@ def set_option(intent, session):
     if 'opt' in intent['slots']:
         user_choice = intent['slots']['opt']['value']
         #session_attributes = create_favorite_color_attributes(favorite_color)
-        if user_choice == "One":
+        if user_choice == "one":
             speech_output = "I now know your choice is " + \
-                            user_choice + \
+                            "product" + \
                             ". You can ask me about product by saying, " \
                             "tell me about product name?"
             reprompt_text = "You can ask me about product by saying, " \
                             "tell me about product name?"
         elif user_choice== "Two":
             speech_output = "I now know your choice is " + \
-                            user_choice + \
-                            ". You can ask me about product by saying, " \
-                            "tell me about product name?"
-            reprompt_text = "You can ask me about product by saying, " \
-                            "tell me about product name?"
+                            "Animal" + \
+                            ". You can ask me about animal by saying, " \
+                            "tell me about animal name?"
+            reprompt_text = "You can ask me about animal by saying, " \
+                            "tell me about animal name?"
         elif user_choice == "Three":
             speech_output = "I now know your choice is " + \
-                            user_choice + \
-                            ". You can ask me about product by saying, " \
-                            "tell me about product name?"
-            reprompt_text = "You can ask me about product by saying, " \
-                            "tell me about product name?"
+                            "ngo names" + \
+                            ". You can ask me about ngos by saying, " \
+                            "tell me about ngos name?"
+            reprompt_text = "You can ask me about ngos by saying, " \
+                            "tell me about ngos name?"
         else:
             speech_output = "I'm not sure what your choice is. " \
                             "Please try again."
