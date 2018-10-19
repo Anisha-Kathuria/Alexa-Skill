@@ -6,9 +6,9 @@ def park_details(intent, session):
     if 'citypark' in intent['slots']:
         user_park = intent['slots']['citypark']['value']
         for i in range(len(parkk)):
-        if user_park == parkk[i][0]:
-            speech_output+=parkk[i][1]+ " "
-            reprompt_text+=parkk[i][1]+ " "
+            if user_park == parkk[i][0]:
+                speech_output+=parkk[i][1]+ " "
+                reprompt_text+=parkk[i][1]+ " "
     else:
         speech_output = "I'm not sure what your city is. " \
                         "Please try again."
