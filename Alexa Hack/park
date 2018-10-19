@@ -2,13 +2,15 @@ def park_details(intent, session):
     cardTitle = "Park Details"
     session_attributes = {}
     should_end_session = False
+    park_ans= " "
 
     if 'citypark' in intent['slots']:
         user_park = intent['slots']['citypark']['value']
         for i in range(len(parkk)):
-        if user_park == parkk[i][0]:
-            speech_output+=parkk[i][1]+ " "
-            reprompt_text+=parkk[i][1]+ " "
+            if user_park == parkk[i][0]:
+                park_ans+=parkk[i][1]
+        speech_output = park_ans
+        reprompt_text = "You can now about national parks in other cities too"
     else:
         speech_output = "I'm not sure what your city is. " \
                         "Please try again."
