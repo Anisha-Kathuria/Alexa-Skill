@@ -59,6 +59,20 @@
                     ]
                 },
                 {
+                    "name": "SoundName",
+                    "slots": [
+                        {
+                            "name": "sound",
+                            "type": "AMAZON.Animal"
+                        }
+                    ],
+                    "samples": [
+                        "voice of {sound}",
+                        "animal voice of {sound}",
+                        "play animal voice of {sound}"
+                    ]
+                },
+                {
                     "name": "ParkName",
                     "slots": [
                         {
@@ -285,6 +299,8 @@
                     "name": "ResumeIntent",
                     "slots": [],
                     "samples": [
+                        "choice menu",
+                        "home",
                         "resume wildlife guru",
                         "i would like to continue",
                         "continue",
