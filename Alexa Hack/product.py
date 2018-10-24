@@ -19,16 +19,16 @@ quesAnswered = True
 
 # --------------- Helpers that build all of the responses ----------------------
 
-def build_speechlet_response(title, output, reprompt_text, should_end_session):
+def build_speechlet_response(title, output, card_output, reprompt_text, should_end_session):
     return {
         'outputSpeech': {
-            'type': 'PlainText',
-            'text': output
+            'type': 'SSML',
+            'ssml': "<speak>" + output + "</speak>"
         },
         'card': {
             'type': 'Simple',
-            'title': "SessionSpeechlet - " + title,
-            'content': "SessionSpeechlet - " + output
+            'title': title,
+            'content':  card_output
         },
         'reprompt': {
             'outputSpeech': {
@@ -54,34 +54,52 @@ def get_welcome_response():
     
     session_attributes = {}
     card_title = "Welcome"
-    speech_output = "Welcome to the Wildlife Guru. " \
-                    "Tell me your choice " \
-                    "One Products "  \
-                    "Two Animals " \
-                    "Three NGO names "\
-                    "Four Wildlife Quiz "\
-                    "Five Wildlife Sanctuary Details "\
-                    "Six Wildlife Facts "\
-                    "Seven Wildlife Movie Suggestion "\
-                    "you can tell me your choice by saying, " \
-                    "my choice is one or two or three that is your choice number " \
-                    "If you want to know about Wildlife Guru or need any help, you can get by saying " \
-                    "help wildlife guru "
+    speech_output = "<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_chickadee_chirps_01'/>"\
+                    "<p>Welcome to the Wildlife Guru. </p>" \
+                    "Kindly select one of the choice below: " \
+                    "<emphasis level='moderate'>One Products. </emphasis><break/>"  \
+                    "<emphasis level='moderate'>Two Animals. </emphasis><break/>" \
+                    "<emphasis level='moderate'>Three NGO names. </emphasis><break/>"\
+                    "<emphasis level='moderate'>Four Wildlife Quiz. </emphasis><break/>"\
+                    "<emphasis level='moderate'>Five Wildlife Sanctuary Details. </emphasis><break/>"\
+                    "<emphasis level='moderate'>Six Wildlife Facts. </emphasis><break/>"\
+                    "<emphasis level='moderate'>Seven Animal Sounds. </emphasis><break/>"\
+                    "<emphasis level='moderate'>Eight Wildlife Movie Suggestion. </emphasis><break time=\'1s\'/>"\
+                    " You can tell me your choice by saying, " \
+                    "<emphasis level='moderate'>my choice is one or two or three.</emphasis><break time=\'1s\'/>" \
+                    " If you want to know about Wildlife Guru or need any help, you can get by saying " \
+                    "<emphasis level='moderate'>help wildlife guru </emphasis><break/>"
+    card_output = "Welcome to the Wildlife Guru. " \
+                    "Kindly select one of the choice below: " \
+                    "One Products. "  \
+                    "Two Animals. " \
+                    "Three NGO names. "\
+                    "Four Wildlife Quiz. "\
+                    "Five Wildlife Sanctuary Details. "\
+                    "Six Wildlife Facts. "\
+                    "Seven Animal Voices. "\
+                    "Eight Wildlife Movie Suggestion. "\
+                    " You can tell me your choice by saying, " \
+                    "my choice is one or two or three. " \
+                    " If you want to know about Wildlife Guru or need any help, you can get by saying " \
+                    "help wildlife guru. "
     reprompt_text = "Please tell me your choice by saying, " \
                     "my choice is one."
     
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def handle_session_end_request():
     card_title = "Session Ended"
     speech_output = "Thank you for using Wildlife Guru. " \
                     "Have a nice day! "
     # Setting this to true ends the session and exits the skill.
+    card_output = "Thank you for using Wildlife Guru. " \
+                    "Have a nice day! "
     should_end_session = True
     return build_response({}, build_speechlet_response(
-        card_title, speech_output, None, should_end_session))
+        card_title, speech_output, card_output, None, should_end_session))
 
 def set_option(intent, session):
 
@@ -92,42 +110,70 @@ def set_option(intent, session):
     if 'opt' in intent['slots']:
         user_choice = intent['slots']['opt']['value']
         if user_choice == "1":
-            speech_output = "You can ask me about general product by saying, general product" \
+            speech_output = "You can ask me about general product by saying, general product <break/>"\
+                            " If you want to ask about specific product then say my product is necklace."
+            card_output = "You can ask me about general product by saying, general product" \
                             " If you want to ask about specific product then say my product is necklace."
             reprompt_text = "You can ask me about specific product by saying, " \
-                            "product is product name?"
+                            "product is Necklace?"
         elif user_choice == "2":
-            speech_output = "May I know about which wildlife Animal you want to know? "  \
+            speech_output = "May I know about which wildlife Animal you want to know? <break/>"  \
                             "You can ask me about animal by saying, " \
-                            "tell me about animal name?"
+                            "tell me about Gaur?"
+            card_output = "May I know about which wildlife Animal you want to know? "  \
+                            "You can ask me about animal by saying, " \
+                            "tell me about Gaur?"
             reprompt_text = "You can ask me about animal by saying, " \
-                            "tell me about animal name?"
+                            "tell me about Gaur?"
         elif user_choice == "3":
-            speech_output = "You can ask me about the NGOs related to wildlife in countries. " \
+            speech_output = "You can ask me about the NGOs related to wildlife in countries. <break/>" \
                             "You just need to say, " \
-                            "tell me NGO in country name?"
+                            "tell me NGO in India?"
+            card_output = "You can ask me about the NGOs related to wildlife in countries. " \
+                            "You just need to say, " \
+                            "tell me NGO in India?"
             reprompt_text = "You can ask me about ngos by saying, " \
-                            "tell me NGO in country name?"
+                            "tell me NGO in India?"
         elif user_choice == "4":
-            speech_output = "Hi! This is a wildlife quiz! For rules of the game, just say rules! " \
+            speech_output = "Hi! This is a wildlife quiz! For rules of the game, just say rules! <break/>" \
                             "Shall we find out how well you know wildlife? Say start quiz to begin" 
                     
+            card_output = "Hi! This is a wildlife quiz! For rules of the game, just say rules! " \
+                            "Shall we find out how well you know wildlife? Say start quiz to begin" 
             reprompt_text = "Hey! I am waiting! " \
                             "Shall we get started? Say begin to get started!"
         elif user_choice == "5":
-            speech_output = "You can ask me about the Wildlife Sanctuaries located in various states of India." \
+            speech_output = "You can ask me about the Wildlife Sanctuaries located in various states of India.<break/>" \
                             "You just need to say, " \
-                            "Wildlife sanctuaries in state name"
+                            "Wildlife sanctuaries in Tamil Nadu"
+            card_output = "You can ask me about the Wildlife Sanctuaries located in various states of India." \
+                            "You just need to say, " \
+                            "Wildlife sanctuaries in Tamil Nadu"
             reprompt_text = "You can ask me about parks by saying, " \
-                            "Wildlife sanctuaries in state name?"
+                            "Wildlife sanctuaries in Tamil Nadu?"
         elif user_choice == "6":
-            speech_output = "I know a lot of interesting facts about wildlife. " \
+            speech_output = "I know a lot of interesting facts about wildlife. <break/>" \
+                            "You can ask me about facts by saying, " \
+                            "tell me a wildlife fact?"
+            card_output = "I know a lot of interesting facts about wildlife. " \
                             "You can ask me about facts by saying, " \
                             "tell me a wildlife fact?"
             reprompt_text = "You can ask me about facts by saying, " \
                             "tell me wildlife fact?"
         elif user_choice == "7":
-            speech_output = "Hi, Are you a movie geek and want a suggestion about wildlife related movie." \
+            speech_output = "Hi, Do you want to hear animal voice.<break/>" \
+                            "Then You can ask me play animal voice by saying, " \
+                            "example play animal voice of cat"
+            card_output = "Hi, Do you want to hear animal voice." \
+                            "Then You can ask me play animal voice by saying, " \
+                            "example play animal voice of cat"
+            reprompt_text = "You can ask me play animal voice by saying, " \
+                            "example play animal voice of cat"
+        elif user_choice == "8":
+            speech_output = "Hi, Are you a movie geek and want a suggestion about wildlife related movie.<break/>" \
+                            "Then You can ask me about movies by saying, " \
+                            "give me a movie suggestion?"
+            card_output = "Hi, Are you a movie geek and want a suggestion about wildlife related movie." \
                             "Then You can ask me about movies by saying, " \
                             "give me a movie suggestion?"
             reprompt_text = "You can ask me about movies by saying, " \
@@ -135,32 +181,53 @@ def set_option(intent, session):
         else:
             speech_output = "I'm not sure what your choice is. "+ \
                             user_choice +" Please try again."
+            card_output = "I'm not sure what your choice is. "+ \
+                            user_choice +" Please try again."
             reprompt_text = "I'm not sure what your choice is. " \
                             "You can tell me your choice by saying, " \
                             "my choice is one."
     else:
         speech_output = "I'm not sure what your choice is. " \
                         "Please try again."
+        card_output = "I'm not sure what your choice is. " \
+                        "Please try again."
         reprompt_text = "I'm not sure what your choice is. " \
                             "You can tell me your choice by saying, " \
                             "my option is one."
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 ########## ----------------     GAME CODE -------------------     ######################
 def result():
     
-    init = "Yay! You completed the quiz! " + " You got " + str(score) + " out of " + str(quesInOneSession) + " correct. "
+    init = "Awesome! You completed the quiz! " + " You got " + str(score) + " out of " + str(quesInOneSession) + " correct. "
     if score == quesInOneSession:
-        init = init + " Perfect score! You really know wildlife! I am impressed! "
+        init = init + " Well Done! Perfect score! You really know technology well! I am impressed! "
     elif score >= (quesInOneSession/1.5)+1:
-        init = init + " Great score! Keep playing, keep getting better! "
+        init = init + " Nice score! Keep playing, will definitely keep getting better! "
     elif score >= (quesInOneSession/2.5)+1:
-        init = init + " Good effort! You can do better, I believe in you! "
+        init = init + " Decent effort! You can do much better, I believe in you! "
     else:
-        init = init + " You can do better! Play again, get better!  "
+        init = init + " You can do better! Way to go. Play again, get better!  "
 
     init = init + "  Wanna play again? Just say, Replay!"
+    
+    return (init)
+
+def result1():
+    
+    init = "<audio src='soundbank://soundlibrary/human/amzn_sfx_crowd_applause_05'/>"\
+            "<say-as interpret-as=\"interjection\">Awesome!</say-as> You completed the quiz!<break/> " + " You got " + str(score) + " out of " + str(quesInOneSession) + " correct. "
+    if score == quesInOneSession:
+        init = init + " <say-as interpret-as=\"interjection\">Well Done. Perfect Score!</say-as> <break/>You really know english phrases well! I am impressed! "
+    elif score >= (quesInOneSession/1.5)+1:
+        init = init + " Great score! Keep playing, will definitely keep getting better! "
+    elif score >= (quesInOneSession/2.5)+1:
+        init = init + " Decent effort! You can do much better, I believe in you! "
+    else:
+        init = init + " You can do better! <say-as interpret-as=\"interjection\">Way to go.</say-as> <break/> Play again, get better! "
+
+    init = init + " Wanna play again? Just say, Replay!"
     
     return (init)
 
@@ -200,24 +267,27 @@ def quiz(intent, session):
         init = ""
 
     speech_output = ""
+    card_output = ""
     reprompt_text = ""
     
     if askedQuesCount == quesInOneSession:
          
-                speech_output = result()
+                speech_output = result1()
+                card_output = result()
                 reprompt_text = " Hey! Let's play again! Say Replay to play again. Or Exit to stop playing "
                 should_end_session = False
 
-                return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+                return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))
             
     if quesAnswered == False:
         card_title = "Alert!"
 
-        speech_output = "Hey! Answer the last question I asked you."
+        speech_output = "<say-as interpret-as=\"interjection\">Uh oh.</say-as> <break/>Answer the last question I asked you."
+        card_output = "Answer the last question I asked you."
         reprompt_text = "Hey! I am waiting for your answer. If you missed the question, say repeat question."
 
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))
              
     
     askedQuesCount = askedQuesCount+1   
@@ -235,14 +305,17 @@ def quiz(intent, session):
     session_attributes['question'] = ques[x]
     session_attributes['options']= options
     
+    question1 = "<audio src='soundbank://soundlibrary/musical/amzn_sfx_drum_comedy_02'/> Question " + str(quesNo) + ".  " + ret_question()
+    
     quesAnswered = False
     
-    speech_output = init + question + options
+    speech_output = init +"<break/><emphasis level='moderate'>" + question1 +"</emphasis>"+ options
+    card_output = init + question + options
     reprompt_text = "Hey! I am waiting for your answer. If you missed the question, say repeat question."
 
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
     #print(b['response']['outputSpeech']['text'])
     
 
@@ -283,46 +356,54 @@ def get_answer(intent, session):
 
     if quesAnswered == True:
         speech_output = "Hey! What you trying to pull buddy? You answered the question already."
+        card_output = "Hey! What you trying to pull buddy? You answered the question already."
         reprompt_text = "You can know more about this question's answer by saying, tell me more, or, you can move to the next question by saying, next question."
 
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
 
         
     correctAns = ans[currQues]
 
     if 'value' not in intent['slots']['option']:
         speech_output = "You need to select an option! Select an option."
+        card_output = "You need to select an option! Select an option."
         reprompt_text = "If you missed the options, say repeat options."
 
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))
         
     ans_input = intent['slots']['option']['value']
     ans_input = convert(ans_input)
 
     if ans_input == "E":
         speech_output = "You need to select a valid option! Select a valid option."
+        card_output = "You need to select a valid option! Select a valid option."
         reprompt_text = "If you missed the options, say repeat options."
 
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))
 
     if ans_input == correctAns:
         speak = "That is the correct answer!" + " Say next for the next question."
+        speak1= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>"\
+                "<say-as interpret-as=\"interjection\">Yay.</say-as> That is the correct answer!" + " Say <emphasis level='moderate'>next</emphasis> for the next question."
         score = score + 1
     else:
         speak = "That answer is incorrect. The correct answer is option " + convertRev(correctAns) + " . Say tell me more to know about the correct answer. " 
+        speak1= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_negative_response_01'/>"\
+                "<say-as interpret-as=\"interjection\">Oh no.</say-as>That answer is incorrect. <break/> The correct answer is <emphasis level='moderate'>" + ques[currQues][0] + "</emphasis><break/> .Say <emphasis level='moderate'>tell me more</emphasis> to know about the correct answer.  "
 
     session_attributes['score'] = score
     
     quesAnswered = True
-    speech_output = speak 
+    speech_output = speak1
+    card_output = speak
     reprompt_text = "You can know more about this question's answer by saying, tell me more. "
     
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
 
 
 def get_next_question(intent, session):
@@ -331,10 +412,11 @@ def get_next_question(intent, session):
         card_title = "Alert!"
 
         speech_output = "Hey! You haven't answered the question yet. You can't move to the next question."
+        card_output = "Hey! You haven't answered the question yet. You can't move to the next question."
         reprompt_text = "Hey! I am waiting for your answer. If you missed the question, say repeat question."
 
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))
         
     return quiz(intent,session)
 
@@ -344,9 +426,10 @@ def repeat_question(intent, session):
 
     if currQues == -1:
         speech_output = "The quiz has not started yet! Say begin to start the quiz"
+        card_output = "The quiz has not started yet! Say begin to start the quiz"
         reprompt_text = "Say begin to start the quiz"
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
     
     if quesAnswered == True:
         speak = "Your question was. "
@@ -356,11 +439,12 @@ def repeat_question(intent, session):
         re = "Hey, there! I am waiting for your answer."
 
     speech_output = speak + ret_question() + " . Options.  " + ret_options()
+    card_output = speak + ret_question() + " . Options.  " + ret_options()
     reprompt_text = re
     
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
     
 
 def repeat_options(intent, session):
@@ -369,9 +453,10 @@ def repeat_options(intent, session):
 
     if currQues == -1:
         speech_output = "The quiz has not started yet! Say begin to start the quiz"
+        card_output = "The quiz has not started yet! Say begin to start the quiz"
         reprompt_text = "Say begin to start the quiz"
         should_end_session = False
-        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+        return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
     
     
     if quesAnswered == True:
@@ -382,11 +467,12 @@ def repeat_options(intent, session):
         re = "Hey, there! I am waiting for your answer."
 
     speech_output =  speak + ret_options()
+    card_output =  speak + ret_options()
     reprompt_text = re
 
     should_end_session = False
 
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
 
     
 def current_score(intent, session):
@@ -406,10 +492,11 @@ def current_score(intent, session):
             re = "I am waiting for the answer! Say, repeat question, if you want me to repeat the question."
 
     speech_output = speak
+    card_output = speak
     reprompt_text = re
     should_end_session = False
 
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
 
 def tell_me_more(intent, session):
 
@@ -423,10 +510,11 @@ def tell_me_more(intent, session):
         re = "Move to the next question by saying, next question."
 
     speech_output = speak
+    card_output = speak
     reprompt_text = re
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))  
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))  
 
 
 def replay_quiz(intent, session):
@@ -452,20 +540,22 @@ def no_response():
     card_title = "No!"
     
     speech_output = "I am sorry, I don't understand!"
+    card_output = "I am sorry, I don't understand!"
     reprompt_text = "For rules, say rules!"
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
         
 def yes_response():
 
     card_title = "Yes!"
     
     speech_output = "Yes yes but I don't understand!"
+    card_output = "Yes yes but I don't understand!"
     reprompt_text = "For rules, say rules!"
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))    
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))    
 
     
 def get_help_response(intent,session):
@@ -476,10 +566,21 @@ def get_help_response(intent,session):
     sessionAttributes= {}
     rulecount = rulecount + 1
     if rulecount == 1:
+        speech_output1 = "This is a wildlife quiz and the rules are simple. <break/>" \
+                        "I will ask you a question. You choose your answer by saying, Option 1, or, Option 2, etc. <break/>"\
+                        "I will tell you, if you were correct. Move to the next question by saying Next! <break/>"
         speech_output = "This is a wildlife quiz and the rules are simple. " \
                         "I will ask you a question. You choose your answer by saying, Option 1, or, Option 2, etc. "\
                         "I will tell you, if you were correct. Move to the next question by saying Next! "
     else:
+        speech_output1 = "Hi! Once Again Welcome to Wildlife Guru! <break/>"\
+                        "This is a wildlife quiz and the rules are simple. <break/>" \
+                        "After you start the quiz, you will be prompted with a question. <break/>"\
+                        "Options for the same will be provided. You have to choose one option, by saying, Option 1, or, Option 2, or, Option 3, or, Option 4. <break/>" \
+                        "After you answer the question, I will tell you, whether you were right, or not. Then say, next question, to move to the next question. <break/>"\
+                        "You can get a question repeated, by saying, Repeat question. You can also get the options for a question, repeated, by saying, repeat options. <break/>"\
+                        "You can also know more about the answer, of a question, by saying, tell me more. <break/>"\
+                        "You will be asked 6 questions. You will get the final score after the game. To get your score between the game, you can ask, what is my score. <break/>"
         speech_output = "Hi! Once Again Welcome to Wildlife Guru! " \
                         "This is a wildlife quiz and the rules are simple. " \
                         "After you start the quiz, you will be prompted with a question. "\
@@ -491,17 +592,20 @@ def get_help_response(intent,session):
         rulecount = 0                
 
     if askedQuesCount == 0:
-        speech_output = speech_output + "That's all! We're all set to begin! Say begin to get started!"
+        speech_output = speech_output1 + "That's all! We're all set to begin! Say begin to get started!"
+        card_output = speech_output + "That's all! We're all set to begin! Say begin to get started!"
     else:
-        speech_output = speech_output + "Alright! Shall we continue? Say begin to continue!"
+        speech_output = speech_output1 + "Alright! Shall we continue? Say begin to continue!"
+        card_output = speech_output + "Alright! Shall we continue? Say begin to continue!"
                     
-    speech_output = speech_output + " For detailed rules, say rules again. "
+    speech_output = speech_output1 + " For detailed rules, say rules again. "
+    card_output = speech_output + " For detailed rules, say rules again. "
     reprompt_text = "Hey there! What are you waiting for? " \
                     "Say begin!"
                     
     should_end_session = False
     
-    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, reprompt_text, should_end_session))
+    return build_response(session_attributes, build_speechlet_response(card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 
 
@@ -521,19 +625,23 @@ def know_animal(intent, session):
                 flag=1
                 break
         if flag==1:
-            speech_output=anima
+            speech_output=anima + "<break/> <emphasis level='moderate'> Say continue to move to the choice menu </emphasis>" 
+            card_output=anima + "Say continue to move to the choice menu."
             reprompt_text=anima
         else:
-            speech_output="Sorry I don't know about this animal. You can ask for other animals. "
-            reprompt_text="You can ask for animals by saying tell me about animal animal name. "
+            speech_output="Sorry I don't know about this animal. You can ask for other animals. Say tell me about animal gaur."
+            card_output="Sorry I don't know about this animal. You can ask for other animals. Say tell me about animal gaur"
+            reprompt_text="You can ask for animals by saying tell me about animal Gaur. "
     else:
         speech_output = "I'm not sure what your animal is. " \
+                        "Please try again."
+        card_output = "I'm not sure what your animal is. " \
                         "Please try again."
         reprompt_text = "I'm not sure what your animal is. " \
                             "You can tell me your animal by saying, " \
                             "tell me about elephant."
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session)) 
+        card_title, speech_output, card_output, reprompt_text, should_end_session)) 
 
 def park_details(intent, session):
     card_title = "Park Details"
@@ -548,17 +656,21 @@ def park_details(intent, session):
                 park_ans+=parkk[i][1]
         if park_ans== " ":
             speech_output= "Sorry I don't know about park in this state."
+            card_output= "Sorry I don't know about park in this state."
             reprompt_text = "You can now about national parks in other cities too"
         else:
-            speech_output = park_ans
+            speech_output = park_ans +"<break/> <emphasis level='moderate'> Say continue to move to the choice menu. </emphasis>"
+            card_output = park_ans + "Say continue to move to the choice menu."
             reprompt_text = "You can now about national parks in other cities too"
 
     else:
         speech_output = "I'm not sure what your city is. " \
                         "Please try again."
+        card_output = "I'm not sure what your city is. " \
+                        "Please try again."
         reprompt_text = "I'm not sure what your city is. "
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def wild_fact(intent, session):
     import random
@@ -566,10 +678,11 @@ def wild_fact(intent, session):
     card_title = "Wildlife Facts"
     session_attributes = {}
     should_end_session = False
-    speech_output = "One of the interesting fact related to wildlife is " + wild[index] 
+    speech_output = "One of the interesting fact related to wildlife is <break/>" + wild[index] + "<break/> <emphasis level='moderate'> Say continue to move to the choice menu. </emphasis>"
+    card_output = "One of the interesting fact related to wildlife is " + wild[index] + "Say continue to move to the choice menu"
     reprompt_text = "You can know interesting facts about wildlife like by saying Tell me about wildlife"
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def set_movie(intent, session):
     import random
@@ -577,10 +690,47 @@ def set_movie(intent, session):
     card_title = "Wildlife Movies"
     session_attributes = {}
     should_end_session = False
-    speech_output = "One of the interesting movie related to wildlife is " + mov[index] 
+    speech_output = "One of the interesting movie related to wildlife is <emphasis level='moderate'" + mov[index] +"</emphasis><break/> <emphasis level='moderate'> Say continue to move to the choice menu </emphasis>"
+    card_output = "One of the interesting movie related to wildlife is " + mov[index] +"Say continue to move to the choice menu."
     reprompt_text = "You can know interesting movies about wildlife like by saying Tell me about movie"
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
+
+def animal_sound(intent, session):
+    import random
+    index = random.randint(0,len(soun)-1)
+    card_title = "Animal Sounds"
+    session_attributes = {}
+    should_end_session = False
+    s=""
+    
+    if 'sound' in intent['slots']:
+        user_sound = intent['slots']['sound']['value']
+        for i in range(len(soun)):
+            if user_sound.lower() == soun[i][0]:
+                s=soun[i][1]
+                flag=1
+                break
+        if flag==1:
+            speech_output = "One of the interesting animal sound is: " + s +"<break/> <emphasis level='moderate'> Say continue to move to the choice menu </emphasis>"
+            card_output = "One of the interesting animal sound is: " + s +" Say continue to move to the choice menu."
+            reprompt_text = "You can know interesting movies about wildlife like by saying Tell me about movie"
+   
+        else:
+            speech_output="Sorry I don't know about this animal. You can ask for other animals.example Say play animal voice of cat."
+            card_output="Sorry I don't know about this animal. You can ask for other animals.example Say play animal voice of cat"
+            reprompt_text="You can ask for animals by saying example play animal voice of cat "
+    else:
+        speech_output = "I'm not sure what your animal is. " \
+                        "Please try again."
+        card_output = "I'm not sure what your animal is. " \
+                        "Please try again."
+        reprompt_text = "I'm not sure what your animal is. " \
+                            "You can tell me your animal by saying, " \
+                            "example play animal voice of cat"
+    
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def product_details(intent, session):
     card_title = "Product Details"
@@ -591,14 +741,17 @@ def product_details(intent, session):
         user_pro = intent['slots']['typeof']['value']
         import random
         index = random.randint(0,len(pro)-1)
-        speech_output = pro[index]
+        speech_output = pro[index] + "<break/> <emphasis level='moderate'> Say continue to move to the choice menu </emphasis>"
+        card_output = pro[index] + "Say continue to move to the choice menu"
         reprompt_text = "You can now about genral product details too by saying general product."
     else:
         speech_output = "I'm not sure what your city is. " \
                         "Please try again."
+        card_output = "I'm not sure what your city is. " \
+                        "Please try again."
         reprompt_text = "I'm not sure what your city is. "
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 
 def ngo_details(intent, session):
@@ -616,17 +769,21 @@ def ngo_details(intent, session):
                 flag=1
         
         if flag==1:
-            speech_output=ngo
+            speech_output=ngo + "<break/> <emphasis level='moderate'> Say continue to move to the choice menu </emphasis>"
+            card_output=ngo + "Say continue to move to the choice menu."
             reprompt_text=ngo
         else:
             speech_output="Sorry there is no ngo in this country. "
+            card_output="Sorry there is no ngo in this country. "
             reprompt_text="You can know about ngos by saying tell me ngo in country name "
     else:
         speech_output = "I'm not sure what your city is. " \
                         "Please try again."
+        card_output = "I'm not sure what your city is. " \
+                        "Please try again."
         reprompt_text = "I'm not sure what your city is. "
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def product_general(intent, session):
     card_title = "Product General Details"
@@ -634,25 +791,30 @@ def product_general(intent, session):
     should_end_session = False
     import random
     index = random.randint(0,len(gen)-1)
-    speech_output = "Details about general product is "+ gen[index] 
+    speech_output = "Details about general product is "+ gen[index] + "<break/> <emphasis level='moderate'> Say continue to move to the choice menu </emphasis>"
+    card_output = "Details about general product is "+ gen[index] +" Say continue to move to the choice menu"
     reprompt_text = gen[index]
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def fallback_func(intent, session):
     card_title = "Fallback"
     session_attributes = {}
     should_end_session = False
     speech_output = "Yes yes but I don't understand."
+    card_output = "Yes yes but I don't understand."
     reprompt_text = "If you are struck then you can ask for help by saying help wildlife guru."
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 def know_about_wildlife_guru(intent, session):
     
     session_attributes = {}
     card_title = "About Wildlife Guru"
-    speech_output = "Hello, Welcome to the Wildlife Guru. " \
+    speech_output = "Hello, Welcome to the Wildlife Guru. <break/>" \
+                    "Wildlife Guru is a single place where you come know about various wildlife related things.<break/>" \
+                    "You can continue your interaction with the skill by saying <emphasis level='moderate'>resume.</emphasis>"
+    card_output = "Hello, Welcome to the Wildlife Guru. " \
                     "Wildlife Guru is a single place where you come know about various wildlife related things." \
                     "You can continue your interaction with the skill by saying resume"
     reprompt_text = "You can resume back by saying" \
@@ -660,7 +822,7 @@ def know_about_wildlife_guru(intent, session):
     
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, card_output, reprompt_text, should_end_session))
 
 # --------------- Events ------------------
 
@@ -717,6 +879,8 @@ def on_intent(intent_request, session):
         return get_welcome_response()
     elif intent_name== "MovieName":
         return set_movie(intent,session)
+    elif intent_name == "SoundName":
+        return animal_sound(intent, session)
     elif intent_name== "ParkName":
         return park_details(intent, session)
     elif intent_name== "AnimalName":
@@ -1069,3 +1233,74 @@ pro=["Species affected is Elephant.	Legal Product Alternative is precious stone 
     "Species affected is bear. Legal Product Alternative is miniature silver skull necklace.	brown bear and asiatic black bear are a few of endangered species found in china, italy, india, japan, etc",
     "Species affected is rhino. Legal Product Alternative is red pearl necklace.	black rhino and great indian rhino are a few of endangered species found in sub saharan africa and india"
     ]
+    
+    
+########## ----------------- ANIMAL SOUNDS ------------ #################3
+soun=[["bear","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bear_groan_roar_01'/>"],
+		["bear","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bear_roar_grumble_01'/>"],
+		["bear","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bear_roar_small_01'/>"],
+		["bird","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_chickadee_chirp_1x_01'/>"],
+		["bird","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_chickadee_chirps_01'/>"],
+		["bird","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_forest_01'/>"],
+		["bird","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_forest_02'/>"],
+		["bird","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_forest_short_01'/>"],
+		["bird","<audio src='soundbank://soundlibrary/animals/amzn_sfx_bird_robin_chirp_1x_01'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_angry_meow_1x_01'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_angry_meow_1x_02'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_angry_screech_1x_01'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_long_meow_1x_01'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_meow_1x_01'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_meow_1x_02'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_purr_01'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_purr_02'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_purr_03'/>"],
+		["cat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_purr_meow_01'/>"],
+		["chicken","<audio src='soundbank://soundlibrary/animals/amzn_sfx_chicken_cluck_01'/>"],
+		["crow","<audio src='soundbank://soundlibrary/animals/amzn_sfx_crow_caw_1x_01'/>"],
+		["crow","<audio src='soundbank://soundlibrary/animals/amzn_sfx_crow_caw_1x_02'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_1x_01'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_1x_02'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_1x_03'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_2x_01'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_2x_02'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_2x_03'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_bark_growl_01'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_woof_1x_01'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_med_growl_1x_01'/>"],
+		["dog","<audio src='soundbank://soundlibrary/animals/amzn_sfx_dog_small_bark_2x_01'/>"],
+		["elephant","<audio src='soundbank://soundlibrary/animals/amzn_sfx_elephant_01'/>"],
+		["elephant","<audio src='soundbank://soundlibrary/animals/amzn_sfx_elephant_02'/>"],
+		["elephant","<audio src='soundbank://soundlibrary/animals/amzn_sfx_elephant_03'/>"],
+		["elephant","<audio src='soundbank://soundlibrary/animals/amzn_sfx_elephant_04'/>"],
+		["elephant","<audio src='soundbank://soundlibrary/animals/amzn_sfx_elephant_05'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_gallop_4x_01'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_gallop_4x_02'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_gallop_4x_03'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_huff_whinny_01'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_neigh_01'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_neigh_low_01'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_whinny_01'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_whinny_02'/>"],
+		["horse","<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_whinny_03'/>"],
+		["lion","<audio src='soundbank://soundlibrary/animals/amzn_sfx_lion_roar_01'/>"],
+		["lion","<audio src='soundbank://soundlibrary/animals/amzn_sfx_lion_roar_02'/>"],
+		["lion","<audio src='soundbank://soundlibrary/animals/amzn_sfx_lion_roar_03'/>"],
+		["monkey","<audio src='soundbank://soundlibrary/animals/amzn_sfx_monkey_calls_3x_01'/>"],
+		["monkey","<audio src='soundbank://soundlibrary/animals/amzn_sfx_monkey_chimp_01'/>"],
+		["monkey","<audio src='soundbank://soundlibrary/animals/amzn_sfx_monkeys_chatter_01'/>"],
+		["rat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_rat_squeak_2x_01'/>"],
+		["rat","<audio src='soundbank://soundlibrary/animals/amzn_sfx_rat_squeaks_01'/>"],
+		["raven","<audio src='soundbank://soundlibrary/animals/amzn_sfx_raven_caw_1x_01'/>"],
+		["raven","<audio src='soundbank://soundlibrary/animals/amzn_sfx_raven_caw_2x_01'/>"],
+		["crow","<audio src='soundbank://soundlibrary/animals/amzn_sfx_rooster_crow_01'/>"],
+		["crow","<audio src='soundbank://soundlibrary/animals/amzn_sfx_rooster_crow_02'/>"],
+		["sheep","<audio src='soundbank://soundlibrary/animals/amzn_sfx_sheep_baa_01'/>"],
+		["sheep","<audio src='soundbank://soundlibrary/animals/amzn_sfx_sheep_bleat_01'/>"],
+		["sheep","<audio src='soundbank://soundlibrary/animals/amzn_sfx_sheep_bleat_02'/>"],
+		["sheep","<audio src='soundbank://soundlibrary/animals/amzn_sfx_sheep_bleat_03'/>"],
+		["turkey","<audio src='soundbank://soundlibrary/animals/amzn_sfx_turkey_gobbling_01'/>"],
+		["wolf","<audio src='soundbank://soundlibrary/animals/amzn_sfx_wolf_howl_01'/>"],
+		["wolf","<audio src='soundbank://soundlibrary/animals/amzn_sfx_wolf_howl_02'/>"],
+		["wolf","<audio src='soundbank://soundlibrary/animals/amzn_sfx_wolf_howl_03'/>"],
+		["wolf","<audio src='soundbank://soundlibrary/animals/amzn_sfx_wolf_young_howl_01'/>"]
+		]
